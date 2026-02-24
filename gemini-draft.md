@@ -40,3 +40,12 @@ Raw code (Python, Node.js, bash scripts) that perform atomic operations must be 
 - **Global Scripts (`.agent/scripts/`)**: Highly reusable code snippets (e.g., standard API connectors, data formatters) available to all agents.
 - **Local Scripts (e.g., `/Skool/scripts/`)**: Code that is hyper-specific to one pillar.
 - **Workflow**: If you write a successful global script (like a web scraper) and the user wants to isolate it for a specific pillar, physically copy the script from `.agent/scripts/` into the `.agent/skills/` wrapper, and then transfer it into the local `/Pillar/skills/` directory.
+
+## 8. Data Pipeline & Storage (The "Inbox" Rule)
+When you acquire raw data (e.g., scraping a website using Apify, or downloading a CSV of client leads), it must be handled systematically to prevent polluting the Knowledge Base.
+- **Raw Data**: Always save raw, unprocessed data to the Pillar's `outputs/` folder (e.g., `/SystemPros/outputs/scrape_results_2026.json`). 
+- **Synthesis**: Do *not* dump raw scrape data into `memory/` or `context/`. Instead, you must process the data, extract the valuable insights, and ask the user if they want the *synthesized* intelligence saved to the Knowledge Base.
+- **Example Flow**: 
+  1. Trigger Apify scraper -> Save to `/SystemPros/outputs/raw_scrape.json`
+  2. Analyze `raw_scrape.json` -> Generate client proposal -> Save to `/SystemPros/outputs/proposal_draft.pdf`
+  3. Extract a new selling point from the data -> Ask user -> Save to `/SystemPros/memory/new_selling_points.md`.
